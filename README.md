@@ -65,47 +65,43 @@ In addition, you will need an Ethernet port on your machine to communicate with 
 
 If you don’t have a 64-bit Linux OS installed on your machine, we recommend [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox) (free) or dual booting your machine.
 
-Make sure to allocate at least 32GB (or 64GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 4-8GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 16.04.2 but any of the following OSes or newer should work:
-* Red Hat Enterprise Linux 6.6 64-bit
-* CentOS Linux 6.7
-* SUSE Enterprise Linux 11.4 64-bit
-* Ubuntu Linux 16.04.1 LTS 64-bit
+Make sure to allocate at least 32GB (or 64GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 4-8GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 20.04.4 LTS.
 
-### Vivado HL WebPACK 2017.1
+### Vitis Unified Software Platform 2020.2
 
-You’ll need to install Xilinx’ FPGA compilation toolchain, [Vivado HL WebPACK 2017.1](https://www.xilinx.com/products/design-tools/vivado.html), which a license-free version of the Vivado HLx toolchain.
+You’ll need to install Xilinx’ FPGA compilation toolchain, [Vitis Unified Software Platform 2020.2](https://www.xilinx.com/products/design-tools/vitis.html). Xilinx provides a free edition and that's enough for this project.
 
-1. Go to the [download webpage](https://www.xilinx.com/support/download.html), and download the Linux Self Extracting Web Installer for Vivado HL 2017.1 WebPACK and Editions.
+
+1. Go to the [download webpage](https://www.xilinx.com/support/download.html), and download the _Xilinx Unified Installer 2020.2: Linux Self Extracting Web Installer_ from Vivado Archive.
 2. You’ll have to sign in with a Xilinx account. This requires a Xilinx account creation that will take 2 minutes.
-3. Pass the Name and Address Verification by clicking “Next”, and you will get the opportunity to download a binary file, called `Xilinx_Vivado_SDK_2017.1_0415_1_Lin64.bin`.
-4. Now that the file is downloaded, go to your Downloads directory, and change the file permissions so it can be executed: `chmod u+x Xilinx_Vivado_SDK_2017.1_0415_1_Lin64.bin`
-5. Now you can execute the binary: `./Xilinx_Vivado_SDK_2017.1_0415_1_Lin64.bin`
-6. A Vivado 2017.1 Installer program GUI will launch.
+3. Pass the Name and Address Verification by clicking “Next”, and you will get the opportunity to download a binary file, called `Xilinx_Unified_2020.2_1118_1232_Lin64.bin`.
+4. Now that the file is downloaded, go to your Downloads directory, and change the file permissions so it can be executed: `chmod u+x Xilinx_Unified_2020.2_1118_1232_Lin64.bin`
+5. Now you can execute the binary: `./Xilinx_Unified_2020.2_1118_1232_Lin64.bin`
+6. A Xilinx Unified 2020.2 Installer program GUI will launch.
+   * On the **A Newer Version Is Available** prompt, click “Continue” to continue installing version 2020.2.
    * Click “Next” on the **Welcome** screen.
    * Enter your Xilinx User Credentials under “User Authentication” and select the “Download and Install Now” before clicking “Next” on the **Select Install Type** screen.
+   * Select “Vitis” and click “Next” on the **Select Product to Install**.
+   * Under the **Vitis Unified Software Platform** screen, before hitting “Next", check the following options (the rest can be unchecked):
+     * Design Tools -> Vitis Unified Software Platform
+     * Devices -> Devices for Custom Platforms -> SoCs -> Zynq-7000
+   * Your total download size should be about 17.36 GB and the amount of Disk Space Required 77.67 GB.
    * Accept all terms before clicking on “Next” on the **Accept License Agreements** screen.
-   * Select the “Vivado HL WebPACK” before clicking on “Next” on the **Select Edition to Install** screen.
-   * Under the **Vivado HL WebPACK** screen, before hitting “Next", check the following options (the rest should be unchecked):
-     * Design Tools -> Vivado Design Suite -> Vivado
-     * Design Tools -> Vivado Design Suite -> Vivado High Level Synthesis
-     * Devices -> Production Services -> SoCs -> Zynq-7000 Series
-   * Your total download size should be about 3GB and the amount of Disk Space Required 13GB.
    * Set the installation directory before clicking “Next” on the **Select Destination Directory** screen. It might highlight some paths as red - that’s because the installer doesn’t have the permission to write to that directory. In that case select a path that doesn’t require special write permissions (e.g. in your home directory).
    * Hit “Install” under the **Installation Summary** screen.
    * An **Installation Progress Window** will pop-up to track progress of the download and the installation.
    * This process will take about 20-30 minutes depending on your connection speed.
-   * A pop-up window will inform you that the installation completed successfully. Click "OK".
-   * Finally the **Vivado License Manager** will launch. Select "Get Free ISE WebPACK, ISE/Vivado IP or PetaLinux License" and click "Connect Now" to complete the license registration process. 
+   * A pop-up window will inform you that the installation completed successfully. Click “OK”.
 7. The last step is to update your `~/.bashrc` with the following line:
-```bash
-# Xilinx Vivado 2017.1 environment
-source <install_path>/Vivado/2017.1/settings64.sh
-```
+    ```bash
+    # Xilinx Vitis HLS 2020.2 environment
+    source <install_path>/Xilinx/Vitis_HLS/2020.2/settings64.sh
+    ```
 
 ### PYNQ board
 
 The PYNQ board website complete with documentation and forums is available [here](http://www.pynq.io/).
-Follow the **Getting Started** tutorial to get your Pynq board set up (please read the notes below first). Note that if you have any issues with the board (booting problems, Python errors, etc.), consider flashing your SD card with [version 1.4 of the Pynq runtime](https://github.com/Xilinx/PYNQ/releases/tag/v1.4). 
+Follow the **Getting Started** tutorial to get your Pynq board set up (please read the notes below first). Note that if you have any issues with the board (booting problems, Python errors, etc.), consider flashing your SD card with [version 2.7.0 of the Pynq runtime](https://github.com/Xilinx/PYNQ/releases/tag/v2.7.0).
 
 **SD card flashing notes**
 * We recommend using [Etcher](https://etcher.io/) for one-step SD-card flashing. You can download the image for the SD card on the PYNQ board [website](http://www.pynq.io/).
@@ -127,13 +123,13 @@ Try one of the iPython notebook examples available out-of-the-box on your PYNQ b
 
 # Part 1: Matrix Multiplication Pipeline Optimization in HLS (40 marks)
 
-This first part will cover fundamentals of high level synthesis. 
+This first part will cover fundamentals of high level synthesis.
 
 ### Recommended Reading
 
 The [Vivado HLS User Guide](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_1/ug902-vivado-high-level-synthesis.pdf) provides plenty of valuable reference information. We *strongly* recommend reading the **Understanding High-Level Synthesis** pages 5-12 as an introduction.
 
-As an optional exercise, we recommend going through the [Vivado HLS Tutorial](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_1/ug871-vivado-high-level-synthesis-tutorial.pdf) Chapters 6 to familiarize yourself with design analysis and design optimization techniques (about 30mins). 
+As an optional exercise, we recommend going through the [Vivado HLS Tutorial](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_1/ug871-vivado-high-level-synthesis-tutorial.pdf) Chapters 6 to familiarize yourself with design analysis and design optimization techniques (about 30mins).
 
 
 ## A. Understanding the baseline matrix multiply (background)
@@ -164,7 +160,7 @@ The `mmult_hw()` function contains certain high-level HLS-specific pragmas defin
 * *AXI Lite* is a simple protocol that provides point-to-point bi-directional communication between the ARM processor and the HLS accelerator to control the HLS accelerator tasks.
 * *AXI Stream* provides a unidirectional throughput-oriented communication channel between the ARM processor's memory system and the hardware accelerator and vice-versa.
 
-In order to interface with the input and output AXI streams, we've provided two function helpers: `pop_stream()` and `push_stream()`. The code below shows how these two helper functions are used to stream data into and out of the user-instantiated hardware buffers. 
+In order to interface with the input and output AXI streams, we've provided two function helpers: `pop_stream()` and `push_stream()`. The code below shows how these two helper functions are used to stream data into and out of the user-instantiated hardware buffers.
 
 ```c++
 // Input stream and output stream sizes
@@ -173,13 +169,13 @@ In order to interface with the input and output AXI streams, we've provided two 
 
 // AXI Stream interface
 void mmult_hw (AXI_VAL in_stream[IS_SIZE], AXI_VAL out_stream[OS_SIZE]) {
-	
+
     // Hardware buffers
     float offset_buf[CLASSES];
     float weight_buf[CLASSES][FEAT];
     float in_buf[BATCHES][FEAT];
     float out_buf[BATCHES][CLASSES];
-    
+
     // Input and output AXI stream indices
     int is_idx = 0;
     int os_idx = 0;
@@ -189,7 +185,7 @@ void mmult_hw (AXI_VAL in_stream[IS_SIZE], AXI_VAL out_stream[OS_SIZE]) {
         // Pop data from stream
         offset_buf[i] = pop_stream(in_stream[is_idx++]);
     }
-	
+
     // Stream data into weight_buf
     LOAD_W_1: for (int i = 0; i < CLASSES; i++) {
         LOAD_W_2: for (int j = 0; j < FEAT; j++) {
@@ -197,7 +193,7 @@ void mmult_hw (AXI_VAL in_stream[IS_SIZE], AXI_VAL out_stream[OS_SIZE]) {
             weight_buf[i][j] = pop_stream(in_stream[is_idx++]);
         }
     }
-    
+
     // Stream data into in_buf
     LOAD_I_1: for (int i = 0; i < BATCH; i++) {
         LOAD_I_2: for (int j = 0; j < FEAT; j++) {
@@ -205,11 +201,11 @@ void mmult_hw (AXI_VAL in_stream[IS_SIZE], AXI_VAL out_stream[OS_SIZE]) {
             in_buf[i][j] = pop_stream(in_stream[is_idx++]);
 	}
     }
-    
+
     // Do Matrix Multiplication
     ...
-    
-    
+
+
     // Stream data out of out_buf
     STORE_O_1: for (int i = 0; i < BATCH; i++) {
         STORE_O_2: for (int j = 0; j < CLASSES; j++) {
@@ -295,7 +291,7 @@ You will also find a performance estimate in the report:
 +--------+--------+--------+--------+---------+
 ```
 
-The Latency indicates how many FPGA cycles it takes to perform one matrix multiplication on the FPGA (i.e. a batch of inference tasks). The Initiation Interval describes how many cycles you'd have to wait until you can process the next batch of input data. These two metrics are identical because the entire algorithm is too large to be pipelined. 
+The Latency indicates how many FPGA cycles it takes to perform one matrix multiplication on the FPGA (i.e. a batch of inference tasks). The Initiation Interval describes how many cycles you'd have to wait until you can process the next batch of input data. These two metrics are identical because the entire algorithm is too large to be pipelined.
 
 Since the FPGA design is clocked at 100MHz, it takes 2.099ms to perform a single inference. This is very slow and the ARM CPU clocked at 667MHz with a dedicated FPU would have no problem beating this naive implementation.
 
@@ -354,7 +350,7 @@ WARNING: [SCHED 204-69] Unable to schedule 'load' operation ('in_buf_load_2', ./
 ```
 The pipelined design suffers from a resource contention problem. While HLS tries to allocate more adders and multipliers to expose more parallelism in the design, it can only leverage as much parallelism as the FPGA memories allow.
 
-By default, FPGA-based SRAM memories are dual-ported. However you can tell the compiler to distribute your buffer across multiplier SRAM memories to offer more ports and therefore expose more parallelism. 
+By default, FPGA-based SRAM memories are dual-ported. However you can tell the compiler to distribute your buffer across multiplier SRAM memories to offer more ports and therefore expose more parallelism.
 
 ### Problem Statement
 
@@ -493,7 +489,7 @@ You will also have to perform floating-point to fixed-point conversion of your l
 
 Report the following:
 * (1) the fixed-point validation accuracy reported by `mnist.py` after you've tweaked the `SCALE` factor.
-* (2) the design latency in cycles 
+* (2) the design latency in cycles
 * (3) the overall device utilization (as Total per Resource).
 * (4) your measured system speedup over the fixed-point CPU implementation
 * (5) your measured classification accuracy on the 8k MNIST test sample
