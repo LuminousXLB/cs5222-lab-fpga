@@ -150,10 +150,8 @@ if __name__ == "__main__":
 
     # Measure Validation Errors
     actual_label = test_labels.argmax(axis=1)
-    float_guess_label = float_labels.argmax(axis=1)
-    float_errors = (~(actual_label == float_guess_label)).sum()
-    fixex_guess_label = fixed_labels.argmax(axis=1)
-    fixed_errors = (~(actual_label == fixex_guess_label)).sum()
+    float_errors = (actual_label != float_labels.argmax(axis=1)).sum()
+    fixed_errors = (actual_label != fixed_labels.argmax(axis=1)).sum()
 
     # Produce stats
     print("Min/Max of coefficient values [{}, {}]".format(reg.coef_.min(), reg.coef_.max()))
