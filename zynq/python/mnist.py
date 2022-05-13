@@ -1,10 +1,10 @@
-import os
 import argparse
 import struct
-import random
+from pathlib import Path
+
 import numpy as np
+from skimage.transform import resize
 from sklearn import linear_model
-from scipy.misc import imresize
 
 # File names
 TRAIN_DAT = "train-images-idx3-ubyte"
@@ -17,8 +17,8 @@ def show(image):
     """
     Render a given numpy.uint8 2D array of pixel data.
     """
-    from matplotlib import pyplot
     import matplotlib as mpl
+    from matplotlib import pyplot
 
     fig = pyplot.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -32,26 +32,22 @@ def show(image):
 def download(args):
     """
     Downloads the MNIST dataset into the specified dir.
-    source: mxnet
     """
-    if not os.path.isdir(args.data_dir):
-        os.system("mkdir " + args.data_dir)
-    os.chdir(args.data_dir)
-    if (
-        (not os.path.exists(TRAIN_DAT))
-        or (not os.path.exists(TRAIN_LAB))
-        or (not os.path.exists(TEST_DAT))
-        or (not os.path.exists(TEST_LAB))
-    ):
-        import urllib, zipfile
 
-        zippath = os.path.join(os.getcwd(), "mnist.zip")
-        urllib.urlretrieve("http://data.mxnet.io/mxnet/data/mnist.zip", zippath)
-        zf = zipfile.ZipFile(zippath, "r")
-        zf.extractall()
-        zf.close()
-        os.remove(zippath)
-    os.chdir("..")
+    data_dir = Path(args.data_dir)
+    data_dir.mkdir(exist_ok=True)
+
+    zippath = data_dir / "mnist.zip"
+    if not zippath.exists():
+        from urllib import request
+
+        request.urlretrieve("http://data.mxnet.io/mxnet/data/mnist.zip", zippath)
+
+    if not all(map(lambda p: (data_dir / p).exists(), [TRAIN_DAT, TRAIN_LAB, TEST_DAT, TEST_LAB])):
+        import zipfile
+
+        with zipfile.ZipFile(zippath, "r") as zf:
+            zf.extractall(data_dir)
 
 
 def getIterator(args, mode):
@@ -60,23 +56,22 @@ def getIterator(args, mode):
     source: https://gist.github.com/akesling/5358964
     """
 
-    fname_img = os.path.join(args.data_dir, TEST_DAT if mode == "test" else TRAIN_DAT)
-    fname_lbl = os.path.join(args.data_dir, TEST_LAB if mode == "test" else TRAIN_LAB)
+    fname_img = Path(args.data_dir) / (TEST_DAT if mode == "test" else TRAIN_DAT)
+    fname_lbl = Path(args.data_dir) / (TEST_LAB if mode == "test" else TRAIN_LAB)
 
     # Access label and data from bit files
     with open(fname_lbl, "rb") as flbl:
-        magic, num = struct.unpack(">II", flbl.read(8))
+        _, _ = struct.unpack(">II", flbl.read(8))
         lbl = np.fromfile(flbl, dtype=np.int8)
+
     with open(fname_img, "rb") as fimg:
-        magic, num, rows, cols = struct.unpack(">IIII", fimg.read(16))
-        img = np.fromfile(fimg, dtype=np.uint8).reshape(len(lbl), rows, cols)
+        _, num, rows, cols = struct.unpack(">IIII", fimg.read(16))
+        img = np.fromfile(fimg, dtype=np.uint8).reshape(num, rows, cols)
 
-    # Format tuple: (label, data)
-    get_img = lambda idx: (lbl[idx], img[idx])
+    assert num == len(lbl)
 
-    # Create an iterator which returns each image in turn
-    for i in xrange(len(lbl)):
-        yield get_img(i)
+    for pair in zip(lbl, img):
+        yield pair
 
 
 def getDataSet(args, mode):
@@ -86,21 +81,15 @@ def getDataSet(args, mode):
 
     # Download MNIST dataset if it hasn't been already downloaded
     download(args)
-    # Process the raw data
-    mnistData = getIterator(args, mode)
 
     # Data and labels
     data = []
     labels = []
-    # Tracks positive and negative samples
-    (pos, neg) = (0, 0)
 
     # Iterate until we have enough samples
-    for t in mnistData:
-        lab = t[0]
-        img = t[1]
+    for lab, img in getIterator(args, mode):
         # Resize the image
-        img = imresize(img, (args.dim, args.dim), interp="bilinear")
+        img = resize(img, (args.dim, args.dim), preserve_range=True)
         # Reshape
         datum = np.divide(img.reshape((args.dim * args.dim,)), 1)
         # Prepare the labels (one-hot encoded)
@@ -160,18 +149,11 @@ if __name__ == "__main__":
     fixed_labels = np.dot(i_p, w_p.T)
 
     # Measure Validation Errors
-    float_errors = 0
-    for idx, label in enumerate(test_labels):
-        guess_label = np.argmax(float_labels[idx])
-        actual_label = np.argmax(label)
-        if guess_label != actual_label:
-            float_errors += 1.0
-    fixed_errors = 0
-    for idx, label in enumerate(test_labels):
-        guess_label = np.argmax(fixed_labels[idx])
-        actual_label = np.argmax(label)
-        if guess_label != actual_label:
-            fixed_errors += 1.0
+    actual_label = test_labels.argmax(axis=1)
+    float_guess_label = float_labels.argmax(axis=1)
+    float_errors = (~(actual_label == float_guess_label)).sum()
+    fixex_guess_label = fixed_labels.argmax(axis=1)
+    fixed_errors = (~(actual_label == fixex_guess_label)).sum()
 
     # Produce stats
     print("Min/Max of coefficient values [{}, {}]".format(reg.coef_.min(), reg.coef_.max()))
