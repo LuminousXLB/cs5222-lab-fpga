@@ -32,6 +32,11 @@ void mmult_hw(hls::stream<AXI_VAL>& in_stream, hls::stream<AXI_VAL>& out_stream)
     T in_buf[BATCH][FEAT];
     T out_buf[BATCH][CLASSES];
 
+#pragma HLS BIND_STORAGE    variable=offset_buf type=RAM_T2P
+#pragma HLS BIND_STORAGE    variable=weight_buf type=RAM_T2P
+#pragma HLS BIND_STORAGE    variable=in_buf     type=RAM_T2P
+#pragma HLS BIND_STORAGE    variable=out_buf    type=RAM_T2P
+
     // Input and output AXI stream indices
     int is_idx = 0;
     int os_idx = 0;
