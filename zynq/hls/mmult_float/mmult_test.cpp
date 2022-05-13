@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #include "mmult.h"
 
 void matrix_multiply_ref(T offsets[CLASSES], T weights[CLASSES][FEAT], T in[BATCH][FEAT], T out[BATCH][CLASSES])
@@ -70,7 +69,8 @@ int main(void)
     for (int i = 0; i < CLASSES; i += WIDTH_RATIO) {
         converter.val.f0 = offsets[i + 0];
         converter.val.f1 = offsets[i + 1];
-        in_stream[is_idx++] = push_stream(converter.packet, 0);
+        in_stream.write(push_stream(converter.packet, 0));
+        is_idx++;
     }
 
     // stream in the weigth matrix
@@ -78,7 +78,8 @@ int main(void)
         for (int j = 0; j < FEAT; j += WIDTH_RATIO) {
             converter.val.f0 = weights[i][j + 0];
             converter.val.f1 = weights[i][j + 1];
-            in_stream[is_idx++] = push_stream(converter.packet, 0);
+            in_stream.write(push_stream(converter.packet, 0));
+            is_idx++;
         }
     }
 
@@ -87,7 +88,8 @@ int main(void)
         for (int j = 0; j < FEAT; j += WIDTH_RATIO) {
             converter.val.f0 = inputs[i][j + 0];
             converter.val.f1 = inputs[i][j + 1];
-            in_stream[is_idx++] = push_stream(converter.packet, is_idx == (IS_SIZE));
+            in_stream.write(push_stream(converter.packet, is_idx == (IS_SIZE)));
+            is_idx++;
         }
     }
 
@@ -97,7 +99,8 @@ int main(void)
     // extract the output matrix from the out stream
     for (int i = 0; i < BATCH; i++) {
         for (int j = 0; j < CLASSES; j += WIDTH_RATIO) {
-            converter.packet = pop_stream(out_stream[os_idx++]);
+            os_idx++;
+            converter.packet = pop_stream(out_stream);
             matMult_hw[i][j + 0] = converter.val.f0;
             matMult_hw[i][j + 1] = converter.val.f1;
         }

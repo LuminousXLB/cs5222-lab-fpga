@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #include "mmult.h"
 
 void matrix_multiply_ref(out_T offsets[CLASSES], w_T weights[CLASSES][FEAT], in_T in[BATCH][FEAT], out_T out[BATCH][CLASSES])
@@ -66,7 +65,8 @@ int main(void)
             out_bit_T bits = *((out_bit_T*)&offsets[i + w]);
             packet |= (bits & ((1ULL << OUT_WIDTH) - 1)) << (w * OUT_WIDTH);
         };
-        in_stream[is_idx++] = push_stream(packet, 0);
+        is_idx++;
+        in_stream.write(push_stream(packet, 0));
     }
     // pad the last packet in case things don't align
     axi_T packet = 0;
@@ -75,7 +75,8 @@ FINISH_OFF:
         out_bit_T bits = *((out_bit_T*)&offsets[i]);
         packet |= (bits & ((1ULL << OUT_WIDTH) - 1)) << ((i % OUT_WIDTH_RATIO) * OUT_WIDTH);
     }
-    in_stream[is_idx++] = push_stream(packet, 0);
+    is_idx++;
+    in_stream.write(push_stream(packet, 0));
 
     // stream in the weigth matrix
     for (int i = 0; i < CLASSES; i++) {
@@ -86,7 +87,8 @@ FINISH_OFF:
                 w_bit_T bits = *((w_bit_T*)&weights[i][j + w]);
                 packet |= (bits & ((1ULL << W_WIDTH) - 1)) << (w * W_WIDTH);
             };
-            in_stream[is_idx++] = push_stream(packet, 0);
+            is_idx++;
+            in_stream.write(push_stream(packet, 0));
         }
     }
 
@@ -99,7 +101,8 @@ FINISH_OFF:
                 in_bit_T bits = *((in_bit_T*)&inputs[i][j + w]);
                 packet |= (bits & ((1ULL << IN_WIDTH) - 1)) << (w * IN_WIDTH);
             };
-            in_stream[is_idx++] = push_stream(packet, is_idx == (IS_SIZE));
+            is_idx++;
+            in_stream.write(push_stream(packet, is_idx == (IS_SIZE)));
         }
     }
 
@@ -109,7 +112,8 @@ FINISH_OFF:
     // extract the output matrix from the out stream
     for (int i = 0; i < BATCH; i++) {
         for (int j = 0; j < CLASSES - OUT_WIDTH_RATIO; j += OUT_WIDTH_RATIO) {
-            axi_T packet = pop_stream(out_stream[os_idx++]);
+            os_idx++;
+            axi_T packet = pop_stream(out_stream);
         UNPACK_OUT:
             for (int w = 0; w < OUT_WIDTH_RATIO; w++) {
                 out_bit_T bits = (packet >> (w * OUT_WIDTH));
@@ -117,7 +121,8 @@ FINISH_OFF:
             }
         }
         // Pop last AXI data packet
-        axi_T packet = pop_stream(out_stream[os_idx++]);
+        os_idx++;
+        axi_T packet = pop_stream(out_stream);
     FINISH_OUT:
         for (int j = CLASSES - OUT_WIDTH_RATIO; j < CLASSES; j++) {
             out_bit_T bits = (packet >> ((j % OUT_WIDTH_RATIO) * OUT_WIDTH));
