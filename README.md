@@ -18,7 +18,7 @@ You should submit the following files:
 * Your optimized implementation source code, gzipped as `solution.tar.gz` which includes:
    * Training scripts/programs for reproducibility (if you re-trained or changed the classifier)
    * Your hardware design source (if you changed the hardware source, as a .cpp and .h file)
-   * The `classifier.bit` bitstream and the iPython notebook `classifier.ipynb` to run design on the PYNQ board.
+   * The `classifier.bit` bitstream and the jupyter notebook `classifier.ipynb` to run design on the PYNQ board.
 
 ### Story
 
@@ -65,31 +65,30 @@ In addition, you will need an Ethernet port on your machine to communicate with 
 
 If you don’t have a 64-bit Linux OS installed on your machine, we recommend [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox) (free) or dual booting your machine.
 
-Make sure to allocate at least 32GB (or 64GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 4-8GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 20.04.4 LTS.
+Make sure to allocate at least 64GB (or 128GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 4-8GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 20.04.4 LTS.
 
 ### Vitis Unified Software Platform 2020.2
 
-You’ll need to install Xilinx’ FPGA compilation toolchain, [Vitis Unified Software Platform 2020.2](https://www.xilinx.com/products/design-tools/vitis.html). Xilinx provides a free edition and that's enough for this project.
+You’ll need to install Xilinx’ FPGA compilation toolchain, Vitis Unified Software Platform 2020.2. Xilinx provides a free edition and that's enough for this project.
 
-
-1. Go to the [download webpage](https://www.xilinx.com/support/download.html), and download the _Xilinx Unified Installer 2020.2: Linux Self Extracting Web Installer_ from Vivado Archive.
+1. Go to the [download webpage](https://www.xilinx.com/support/download.html), and download the **Xilinx Unified Installer 2020.2: Linux Self Extracting Web Installer** from Vivado Archive.
 2. You’ll have to sign in with a Xilinx account. This requires a Xilinx account creation that will take 2 minutes.
 3. Pass the Name and Address Verification by clicking “Next”, and you will get the opportunity to download a binary file, called `Xilinx_Unified_2020.2_1118_1232_Lin64.bin`.
 4. Now that the file is downloaded, go to your Downloads directory, and change the file permissions so it can be executed: `chmod u+x Xilinx_Unified_2020.2_1118_1232_Lin64.bin`
 5. Now you can execute the binary: `./Xilinx_Unified_2020.2_1118_1232_Lin64.bin`
 6. A Xilinx Unified 2020.2 Installer program GUI will launch.
-   * On the **A Newer Version Is Available** prompt, click “Continue” to continue installing version 2020.2.
-   * Click “Next” on the **Welcome** screen.
-   * Enter your Xilinx User Credentials under “User Authentication” and select the “Download and Install Now” before clicking “Next” on the **Select Install Type** screen.
-   * Select “Vitis” and click “Next” on the **Select Product to Install**.
-   * Under the **Vitis Unified Software Platform** screen, before hitting “Next", check the following options (the rest can be unchecked):
+   * On the _A Newer Version Is Available_ prompt, click “Continue” to continue installing version 2020.2.
+   * Click “Next” on the _Welcome_ screen.
+   * Enter your Xilinx User Credentials under “User Authentication” and select the “Download and Install Now” before clicking “Next” on the _Select Install Type_ screen.
+   * Select “Vitis” and click “Next” on the _Select Product to Install_.
+   * Under the _Vitis Unified Software Platform_ screen, before hitting “Next", check the following options (the rest can be unchecked):
      * Design Tools -> Vitis Unified Software Platform
      * Devices -> Devices for Custom Platforms -> SoCs -> Zynq-7000
    * Your total download size should be about 17.36 GB and the amount of Disk Space Required 77.67 GB.
-   * Accept all terms before clicking on “Next” on the **Accept License Agreements** screen.
-   * Set the installation directory before clicking “Next” on the **Select Destination Directory** screen. It might highlight some paths as red - that’s because the installer doesn’t have the permission to write to that directory. In that case select a path that doesn’t require special write permissions (e.g. in your home directory).
-   * Hit “Install” under the **Installation Summary** screen.
-   * An **Installation Progress Window** will pop-up to track progress of the download and the installation.
+   * Accept all terms before clicking on “Next” on the _Accept License Agreements_ screen.
+   * Set the installation directory before clicking “Next” on the _Select Destination Directory_ screen. It might highlight some paths as red - that’s because the installer doesn’t have the permission to write to that directory. In that case select a path that doesn’t require special write permissions (e.g. in your home directory).
+   * Hit “Install” under the _Installation Summary_ screen.
+   * An _Installation Progress Window_ will pop-up to track progress of the download and the installation.
    * This process will take about 20-30 minutes depending on your connection speed.
    * A pop-up window will inform you that the installation completed successfully. Click “OK”.
 7. The last step is to update your `~/.bashrc` with the following line:
@@ -118,8 +117,9 @@ Follow the **Getting Started** tutorial to get your Pynq board set up (please re
 
 **Connecting to Jupyter notes:**
 * It seems like you won’t be able to connect to the board successfully using either Firefox or Safari. We recommend using [Chrome](https://www.google.com/chrome/) instead.
+* If your board is configured correctly you will be presented with a login screen. The username is `xilinx` and the password is also `xilinx`.
 
-Try one of the iPython notebook examples available out-of-the-box on your PYNQ board to make sure that it works as intended!
+Try one of the jupyter notebook examples available out-of-the-box on your PYNQ board to make sure that it works as intended!
 
 # Part 1: Matrix Multiplication Pipeline Optimization in HLS (40 marks)
 
@@ -127,9 +127,10 @@ This first part will cover fundamentals of high level synthesis.
 
 ### Recommended Reading
 
-The [Vivado HLS User Guide](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_1/ug902-vivado-high-level-synthesis.pdf) provides plenty of valuable reference information. We *strongly* recommend reading the **Understanding High-Level Synthesis** pages 5-12 as an introduction.
+The [Vitis High-Level Synthesis User Guide (UG1399)
+](https://docs.xilinx.com/r/2020.2-English/ug1399-vitis-hls/Introduction-to-Vitis-HLS) provides plenty of valuable reference information. We *strongly* recommend reading the **Introduction to Vitis HLS** as an introduction.
 
-As an optional exercise, we recommend going through the [Vivado HLS Tutorial](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_1/ug871-vivado-high-level-synthesis-tutorial.pdf) Chapters 6 to familiarize yourself with design analysis and design optimization techniques (about 30mins).
+<!-- As an optional exercise, we recommend going through the [Vivado HLS Tutorial](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_1/ug871-vivado-high-level-synthesis-tutorial.pdf) Chapters 6 to familiarize yourself with design analysis and design optimization techniques (about 30mins). -->
 
 
 ## A. Understanding the baseline matrix multiply (background)
@@ -164,11 +165,13 @@ In order to interface with the input and output AXI streams, we've provided two 
 
 ```c++
 // Input stream and output stream sizes
-#define IS_SIZE CLASSES+CLASSES*FEAT+BATCHES*FEAT
-#define OS_SIZE BATCHES*CLASSES
+#define IS_SIZE CLASSES + CLASSES* FEAT + BATCHES* FEAT
+#define OS_SIZE BATCHES* CLASSES
 
 // AXI Stream interface
-void mmult_hw (AXI_VAL in_stream[IS_SIZE], AXI_VAL out_stream[OS_SIZE]) {
+void mmult_hw(hls::stream<AXI_VAL>& in_stream,
+    hls::stream<AXI_VAL>& out_stream)
+{
 
     // Hardware buffers
     float offset_buf[CLASSES];
@@ -177,42 +180,48 @@ void mmult_hw (AXI_VAL in_stream[IS_SIZE], AXI_VAL out_stream[OS_SIZE]) {
     float out_buf[BATCHES][CLASSES];
 
     // Input and output AXI stream indices
-    int is_idx = 0;
     int os_idx = 0;
 
-    // Stream data into offset_buf
-    LOAD_OFF: for (int i = 0; i < CLASSES; i++) {
+// Stream data into offset_buf
+LOAD_OFF:
+    for (int i = 0; i < CLASSES; i++) {
         // Pop data from stream
-        offset_buf[i] = pop_stream(in_stream[is_idx++]);
+        offset_buf[i] = pop_stream(in_stream);
     }
 
-    // Stream data into weight_buf
-    LOAD_W_1: for (int i = 0; i < CLASSES; i++) {
-        LOAD_W_2: for (int j = 0; j < FEAT; j++) {
+// Stream data into weight_buf
+LOAD_W_1:
+    for (int i = 0; i < CLASSES; i++) {
+    LOAD_W_2:
+        for (int j = 0; j < FEAT; j++) {
             // Pop data from stream
-            weight_buf[i][j] = pop_stream(in_stream[is_idx++]);
+            weight_buf[i][j] = pop_stream(in_stream);
         }
     }
 
-    // Stream data into in_buf
-    LOAD_I_1: for (int i = 0; i < BATCH; i++) {
-        LOAD_I_2: for (int j = 0; j < FEAT; j++) {
+// Stream data into in_buf
+LOAD_I_1:
+    for (int i = 0; i < BATCH; i++) {
+    LOAD_I_2:
+        for (int j = 0; j < FEAT; j++) {
             // Pop data from stream
-            in_buf[i][j] = pop_stream(in_stream[is_idx++]);
-	}
+            in_buf[i][j] = pop_stream(in_stream);
+        }
     }
 
-    // Do Matrix Multiplication
-    ...
+// Do Matrix Multiplication
+...
 
-
-    // Stream data out of out_buf
-    STORE_O_1: for (int i = 0; i < BATCH; i++) {
-        STORE_O_2: for (int j = 0; j < CLASSES; j++) {
+// Stream data out of out_buf
+STORE_O_1:
+    for (int i = 0; i < BATCH; i++) {
+    STORE_O_2:
+        for (int j = 0; j < CLASSES; j++) {
             // Push output element into AXI stream
             // push_stream's second argument should be set to True when sending the last packet out
-            out_stream[os_idx] = push_stream(out_buf[i][j], os_idx++ == (BATCH*CLASSES-1));
-	}
+            out_stream = push_stream(out_buf[i][j], os_idx == (BATCH * CLASSES - 1));
+            os_idx++;
+        }
     }
 }
 ```
@@ -222,25 +231,28 @@ The code above assumes that the size of each AXI Stream data packet matches the 
 In order to handle data type conversions you can use a `union`. The code below shows how to perform type conversion quickly.
 
 ```c++
-union
-{
-    axi_T packet;
-    struct {float in_0; float in_1;} val;
-} converter;
+    union {
+        axi_T packet;
+        struct {
+            float in_0;
+            float in_1;
+        } val;
+    } converter;
 
 ...
 
 // Stream data into w_buf
-LOAD_W_1: for (int i = 0; i < CLASSES; i++) {
+LOAD_W_1:
+    for (int i = 0; i < CLASSES; i++) {
     // Increment by 2 (ratio between AXI bus width and float width)
-    LOAD_W_2: for (int j = 0; j < FEAT; j+=2) {
-        // Pop data from stream
-        int k = i*FEAT+j;
-        converter.packet = pop_stream(in_stream[k]);
-        w_buf[i][j+0] = converter.val.in_0;
-        w_buf[i][j+1] = converter.val.in_1;
+    LOAD_W_2:
+        for (int j = 0; j < FEAT; j += 2) {
+            // Pop data from stream
+            converter.packet = pop_stream(in_stream);
+            w_buf[i][j + 0] = converter.val.in_0;
+            w_buf[i][j + 1] = converter.val.in_1;
+        }
     }
-}
 ```
 
 ### HLS Compilation and Design Analysis
@@ -261,62 +273,62 @@ The `BRAM_18K` are on-chip SRAM memories, the `DSP48E` are hard fused multiply a
 It is clear that the design has quite a small footprint: less than 5% utilization overall (bottlenecked by the `BRAM_18K`).
 
 ```
-+-----------------+---------+-------+--------+-------+
-|       Name      | BRAM_18K| DSP48E|   FF   |  LUT  |
-+-----------------+---------+-------+--------+-------+
-|DSP              |        -|      -|       -|      -|
-|Expression       |        -|      -|       0|    308|
-|FIFO             |        -|      -|       -|      -|
-|Instance         |        0|      5|     384|    751|
-|Memory           |       16|      -|       0|      0|
-|Multiplexer      |        -|      -|       -|    381|
-|Register         |        -|      -|     714|      -|
-+-----------------+---------+-------+--------+-------+
-|Total            |       16|      5|    1098|   1440|
-+-----------------+---------+-------+--------+-------+
-|Available        |      280|    220|  106400|  53200|
-+-----------------+---------+-------+--------+-------+
-|Utilization (%)  |        5|      2|       1|      2|
-+-----------------+---------+-------+--------+-------+
++-----------------+---------+-----+--------+-------+-----+
+|       Name      | BRAM_18K| DSP |   FF   |  LUT  | URAM|
++-----------------+---------+-----+--------+-------+-----+
+|DSP              |        -|    -|       -|      -|    -|
+|Expression       |        -|    -|       0|    503|    -|
+|FIFO             |        -|    -|       -|      -|    -|
+|Instance         |        0|    5|     384|    751|    -|
+|Memory           |       14|    -|      64|      5|    -|
+|Multiplexer      |        -|    -|       -|    376|    -|
+|Register         |        -|    -|     369|      -|    -|
++-----------------+---------+-----+--------+-------+-----+
+|Total            |       14|    5|     817|   1635|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Available        |      280|  220|  106400|  53200|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Utilization (%)  |        5|    2|      ~0|      3|    0|
++-----------------+---------+-----+--------+-------+-----+
 ```
 
 You will also find a performance estimate in the report:
 
 ```
-+--------+--------+--------+--------+---------+
-|     Latency     |     Interval    | Pipeline|
-|   min  |   max  |   min  |   max  |   Type  |
-+--------+--------+--------+--------+---------+
-|  209851|  209851|  209852|  209852|   none  |
-+--------+--------+--------+--------+---------+
++---------+---------+----------+----------+--------+--------+---------+
+|  Latency (cycles) |  Latency (absolute) |     Interval    | Pipeline|
+|   min   |   max   |    min   |    max   |   min  |   max  |   Type  |
++---------+---------+----------+----------+--------+--------+---------+
+|   228022|   228022|  2.280 ms|  2.280 ms|  228023|  228023|     none|
++---------+---------+----------+----------+--------+--------+---------+
 ```
 
 The Latency indicates how many FPGA cycles it takes to perform one matrix multiplication on the FPGA (i.e. a batch of inference tasks). The Initiation Interval describes how many cycles you'd have to wait until you can process the next batch of input data. These two metrics are identical because the entire algorithm is too large to be pipelined.
 
-Since the FPGA design is clocked at 100MHz, it takes 2.099ms to perform a single inference. This is very slow and the ARM CPU clocked at 667MHz with a dedicated FPU would have no problem beating this naive implementation.
+Since the FPGA design is clocked at 100MHz, it takes 2.280ms to perform a single inference. This is very slow and the ARM CPU clocked at 667MHz with a dedicated FPU would have no problem beating this naive implementation.
 
 Let's take a deeper look at the loop analysis report (you now understand why we labeled the loops in the first place) to identify optimization opportunities.
 
 ```
-+--------------+--------+--------+----------+-----------+-----------+------+----------+
-|              |     Latency     | Iteration|  Initiation Interval  | Trip |          |
-|   Loop Name  |   min  |   max  |  Latency |  achieved |   target  | Count| Pipelined|
-+--------------+--------+--------+----------+-----------+-----------+------+----------+
-|- LOAD_OFF_1  |      10|      10|         2|          -|          -|     5|    no    |
-|- LOAD_W_1    |    2580|    2580|       258|          -|          -|    10|    no    |
-| + LOAD_W_2   |     256|     256|         2|          -|          -|   128|    no    |
-|- LOAD_I_1    |    2064|    2064|       258|          -|          -|     8|    no    |
-| + LOAD_I_2   |     256|     256|         2|          -|          -|   128|    no    |
-|- L1          |  205056|  205056|     25632|          -|          -|     8|    no    |
-| + L2         |   25630|   25630|      2563|          -|          -|    10|    no    |
-|  ++ L3       |    2560|    2560|        10|          -|          -|   256|    no    |
-|- STORE_O_1   |     136|     136|        17|          -|          -|     8|    no    |
-| + STORE_O_2  |      15|      15|         3|          -|          -|     5|    no    |
-+--------------+--------+--------+----------+-----------+-----------+------+----------+
++--------------+---------+---------+----------+-----------+-----------+------+----------+
+|              |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+|   Loop Name  |   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
++--------------+---------+---------+----------+-----------+-----------+------+----------+
+|- LOAD_OFF_1  |        5|        5|         1|          -|          -|     5|        no|
+|- LOAD_W_1    |     1300|     1300|       130|          -|          -|    10|        no|
+| + LOAD_W_2   |      128|      128|         1|          -|          -|   128|        no|
+|- LOAD_I_1    |     1040|     1040|       130|          -|          -|     8|        no|
+| + LOAD_I_2   |      128|      128|         1|          -|          -|   128|        no|
+|- L1          |   225536|   225536|     28192|          -|          -|     8|        no|
+| + L2         |    28190|    28190|      2819|          -|          -|    10|        no|
+|  ++ L3       |     2816|     2816|        11|          -|          -|   256|        no|
+|- STORE_O_1   |      136|      136|        17|          -|          -|     8|        no|
+| + STORE_O_2  |       15|       15|         3|          -|          -|     5|        no|
++--------------+---------+---------+----------+-----------+-----------+------+----------+
 
 ```
 
-This report tells us that every step of our matrix multiply hardware is executing sequentially (as if we executed our entire matrix multiply on a single-cycle CPU). You'll observe that the L3 loop (inner dot product loop) takes 2560 cycles to perform a dot product of two vectors with 256 elements, meaning that it takes 10 cycles to multiply and add two elements!
+This report tells us that every step of our matrix multiply hardware is executing sequentially (as if we executed our entire matrix multiply on a single-cycle CPU). You'll observe that the L3 loop (inner dot product loop) takes 2816 cycles to perform a dot product of two vectors with 256 elements, meaning that it takes more than 11 cycles to multiply and add two elements!
 This is because a floating point multiplication on the FPGA takes 4 cycles, and an addition 5 cycles.
 
 Let's look at how we can improve this design with pipelining and batching!
@@ -327,7 +339,7 @@ The base design has pretty underwhelming performance. But from analyzing the des
 * We are clearly under-utilizing our resources, so we have room to utilize more memory and logic resources to improve overall throughput.
 * We are also not taking advantage of pipeline parallelism in any part of the loop, as indicated by the rather high inference latency of our matrix multiply.
 
-We will exercise some common pipeline optimization techniques described in the **Optimizing For Throughput** chapter of the [Vivado HLS User Guide](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_1/ug902-vivado-high-level-synthesis.pdf), pages 188-206.
+We will exercise some common pipeline optimization techniques described in the **Optimizing For Throughput** chapter of the [Vitis HLS Methodology Guide](https://docs.xilinx.com/r/2020.2-English/ug1399-vitis-hls/Optimizing-for-Throughput).
 
 ### Problem Statement
 
@@ -432,17 +444,20 @@ make -j1
 
 And voilà! This process will take a little while (30 mins) depending on utilization. Regarding utilization, to avoid *no-place* errors, we recommend compiling your design where no resource exceeds 60%. This will ensure that your place and route tools have breathing space. In addition, it will make compilation time go a little faster. **Consequently we recommend scaling the design down a little, by limiting the array partitioning factor to `4`, and keeping both tile size and batch size to `128` and `2048` respectively.**
 
+**Note** If you failed to generate IP due to some invalid argument error, follow this [article](https://support.xilinx.com/s/article/76960?language=en_US) and apply the patch given.
+
+
 When your design is done compiling, it is ready to be tested on the PYNQ! Let's go ahead and transfer (1) the hardware design overlay files, (2) the test program, (3) the trained linear model, and (4) the MNIST validation data and labels to the PYNQ board.
 ```bash
-scp build/export/classifier.bit xilinx@192.168.2.99:/home/xilinx/pynq/bitstream/.
-scp tcl/classifier.tcl xilinx@192.168.2.99:/home/xilinx/pynq/bitstream/.
+scp `find -name "*.bit"` xilinx@192.168.2.99:~/classifier.bit
+scp `find -name "*.hwh"` xilinx@192.168.2.99:~/classifier.hwh
 scp jupyter/classifier_1.ipynb xilinx@192.168.2.99:/home/xilinx/jupyter_notebooks/.
 scp python/*.npy xilinx@192.168.2.99:/home/xilinx/jupyter_notebooks/.
 ```
 
 Now log onto your PYNQ board on Chrome by entering the following address: http://192.168.2.99:9090/. Make sure you've properly powered on the board, and connected the board via Ethernet to your host machine. In addition, ensure that you've properly configured your machine's network settings as indicated in the PYNQ getting started guide.
 
-Use the `xilinx` credentials (pwd: `xilinx`) to log into the iPython notebook server. If the file transfer completed with success, you should see your `classifier_1.ipynb` notebook in the jupyter directory tree.
+Use the `xilinx` credentials (pwd: `xilinx`) to log into the jupyter notebook server. If the file transfer completed with success, you should see your `classifier_1.ipynb` notebook in the jupyter directory tree.
 
 Click on it to launch the program! You can simply execute the entire program by clicking on **Kernel -> Restart & Run All**.
 
@@ -450,7 +465,7 @@ Click on it to launch the program! You can simply execute the entire program by 
 
 Report (1) the measured speedup and (2) measured classification accuracy.
 
-**What to expect**: You should measure a roughly 6.7x speedup over the numpy implementation. While this speedup is not mind-blowing,  it is encouraging for the following reasons:
+**What to expect**: You should measure a roughly 5x speedup over the numpy implementation. While this speedup is not mind-blowing,  it is encouraging for the following reasons:
 * We are targeting floating point computation which low-power FPGAs are notoriously bad at. We have room perform more aggressive data type quantization techniques in order to push more throughput out of our FPGA (covered next).
 * We are compiling a low frequency (100MHz) which is 1/6.6th of what the CPU is running at. With more frequency optimizations, it's not impossible to clock the FPGA at 250MHz (however this won't be covered during this lab).
 * Lastly we are utilizing less than ~50% of the FPGA resources and only 1/4 of the available memory throughput on the FPGA, so we could potentially improve throughput significantly.
@@ -473,13 +488,13 @@ set src_dir "../hls/mmult_fixed"
 
 To test your design on the board, you'll need to transfer your new fixed-point classifier overlay to the PYNQ file system with the following commands:
 ```bash
-scp build/export/classifier.bit xilinx@192.168.2.99:/home/xilinx/pynq/bitstream/classifier_fixed.bit
-scp tcl/classifier.tcl xilinx@192.168.2.99:/home/xilinx/pynq/bitstream/classifier_fixed.tcl
+scp `find -name "*.bit"` xilinx@192.168.2.99:~/classifier.bit
+scp `find -name "*.hwh"` xilinx@192.168.2.99:~/classifier.hwh
 scp jupyter/classifier_2.ipynb xilinx@192.168.2.99:/home/xilinx/jupyter_notebooks/.
 scp python/*.npy xilinx@192.168.2.99:/home/xilinx/jupyter_notebooks/.
 ```
 
-Finally, once you've logged onto the iPython notebook server on the PYNQ, open the `classifier_2.ipynb` notebook, and execute your test program by clicking on **Kernel -> Restart & Run All**.
+Finally, once you've logged onto the jupyter notebook server on the PYNQ, open the `classifier_2.ipynb` notebook, and execute your test program by clicking on **Kernel -> Restart & Run All**.
 
 ### Problem Statement
 
@@ -503,7 +518,7 @@ Also report the following:
 * Again you will have to tweak your memory partitioning, tiling factor to optimize your kernel latency/throughput.
 * Make sure that you close your AXI stream properly when you push data to it (see `push_stream()` calls in `mmult_float.cpp`). The `bool last` argument should be set to `true` on the last stream packet or the DMA drivers will hang when you try to test your design.
 * You'll notice that in `mmult.h` we are using `ap_int` which are arbitrary precision integers, which is HLS' solution to providing integers of arbitrary width (so not just 1, 8, 16, 32, 64). Unfortunately the `union` type conversion trick does not work on `ap_ints`. Instead you'll need to do a bit of bit manipulation on the AXI raw values before converting to `ap_int`. The `mmult_test.cpp` file should provide a good reference on how data is packed and unpacked before being pushed or popped from AXI channels.
-* By default HLS will implement 8-bit multipliers on hard `BRAM_18K` blocks. But the Zynq FPGA only contains 220 multipliers. If you want to allocate more multipliers, you can use the following directive which will tell HLS to synthesize multipliers using LUTs instead: `#pragma HLS RESOURCE variable=mult core=Mul_LUT`.
+<!-- * By default HLS will implement 8-bit multipliers on hard `BRAM_18K` blocks. But the Zynq FPGA only contains 220 multipliers. If you want to allocate more multipliers, you can use the following directive which will tell HLS to synthesize multipliers using LUTs instead: `#pragma HLS RESOURCE variable=mult core=Mul_LUT`. -->
 
 **What to expect**: In terms of latency as HLS reports, this design should achieve 400-500x improvement in batch-normalized latency over the first naive floating point design. On the board, you should see a roughly 10x improvement over Part 1's  FPGA over CPU speedup.
 
