@@ -9,7 +9,7 @@
 ################################################################
 
 # Check if script is running in correct Vivado version.
-set scripts_vivado_version 2017.1
+set scripts_vivado_version 2020.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -89,7 +89,7 @@ if { ${design_name} eq "" } {
    set errMsg "Design <$design_name> already exists in your project, please set the variable <design_name> to another value."
    set nRet 1
 } elseif { [get_files -quiet ${design_name}.bd] ne "" } {
-   # USE CASES: 
+   # USE CASES:
    #    6) Current opened design, has components, but diff names, design_name exists in project.
    #    7) No opened design, design_name exists in project.
 
@@ -1596,13 +1596,8 @@ update_compile_order -fileset sim_1
 
 # Run bistream generation on 4 threads
 launch_runs impl_1 -to_step write_bitstream -jobs 4
-wait_on_run impl_1 
+wait_on_run impl_1
 puts "Implementation done!"
-
-# Export hardware description file and bitstream files to export/ dir
-file mkdir $proj_path/export
-file copy -force $proj_path/$proj_name.runs/impl_1/${proj_name}_wrapper.sysdef $proj_path/export/classifier.hdf
-file copy -force $proj_path/$proj_name.runs/impl_1/${proj_name}_wrapper.bit $proj_path/export/classifier.bit
 
 exit
 
