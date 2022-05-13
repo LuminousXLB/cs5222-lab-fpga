@@ -47,8 +47,8 @@ This high-level language is very similar to C/C++, but incorporates compiler pra
 In this lab, we’ve trained a naive [linear classifier](https://en.wikipedia.org/wiki/Linear_classifier) to perform hand digit recognition on scaled-down 16x16 images of hand-written digits. This equates to performing matrix multiplication over **I** and **W** where **I** is an (BxF) input matrix and **W** is an (FxC) weight matrix, and where B, F and C denote batch size, input features size and category count respectively.
 
 You can find the implementation of the linear classifier under `python/mnist.py`. To execute this Python program, you will need:
-* Python 2.7 and pip
-* The following packages: numpy, scipy, sklearn, Pillow
+* Python 3.8 and pip
+* The following packages: matplotlib, numpy, scikit-image, scikit-learn
 
 ### Hardware Kit Overview
 
@@ -485,7 +485,7 @@ Finally, once you've logged onto the iPython notebook server on the PYNQ, open t
 
 Implement a fixed-point linear classifier, by completing the `TODOs` in `hls/mmult_fixed/mmult_fixed.cpp` and `hls/mmult_fixed/mmult_fixed.h`. The batch size has been set to `8192` and should not be altered. Your design should pass the tests in `hls/mmult_fixed/mmult_test.cpp`.
 
-You will also have to perform floating-point to fixed-point conversion of your learned weight and offset coefficients. In the training file under `python/mnist.py` modify the `SCALE` factor to achieve less than 20% validation error on fixed point inference. Executing `python mnist.py` from the `python/` directory will produce updated `.npy` files that will then be copied onto the Zynq when you re-run the `scp` commands.
+You will also have to perform floating-point to fixed-point conversion of your learned weight and offset coefficients. In the training file under `python/mnist.py` modify the `SCALE` factor to achieve less than 20% validation error on fixed point inference. Executing `python3 mnist.py` from the `python/` directory will produce updated `.npy` files that will then be copied onto the Zynq when you re-run the `scp` commands.
 
 Report the following:
 * (1) the fixed-point validation accuracy reported by `mnist.py` after you've tweaked the `SCALE` factor.
