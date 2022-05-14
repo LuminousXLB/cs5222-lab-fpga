@@ -65,7 +65,7 @@ In addition, you will need an Ethernet port on your machine to communicate with 
 
 If you don’t have a 64-bit Linux OS installed on your machine, we recommend [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox) (free) or dual booting your machine.
 
-Make sure to allocate at least 64GB (or 128GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 4-8GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 20.04.4 LTS.
+Make sure to allocate at least 96GB (or 128GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 4-8GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 20.04.4 LTS.
 
 ### Vitis Unified Software Platform 2020.2
 
