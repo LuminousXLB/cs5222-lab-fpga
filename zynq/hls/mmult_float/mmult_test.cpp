@@ -58,8 +58,8 @@ int main(void)
     printf("DEBUGGING AXI4 STREAMING DATA TYPES!\r\n");
 
     // prepare data for the DUT
-    AXI_VAL in_stream[IS_SIZE];
-    AXI_VAL out_stream[OS_SIZE];
+    hls::stream<AXI_VAL> in_stream;
+    hls::stream<AXI_VAL> out_stream;
 
     // input and output stream indices
     int is_idx = 0;

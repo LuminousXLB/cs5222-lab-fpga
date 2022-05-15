@@ -51,5 +51,5 @@ typedef ap_axiu<AXI_DATA, AXI_U, AXI_TI, AXI_TD> AXI_VAL;
 void mmult_hw(hls::stream<AXI_VAL>& in_stream, hls::stream<AXI_VAL>& out_stream);
 
 // AXI stream push and pop
-axi_T pop_stream(AXI_VAL const& e);
+axi_T pop_stream(hls::stream<AXI_VAL>& in_stream);
 AXI_VAL push_stream(axi_T const& v, bool last);
