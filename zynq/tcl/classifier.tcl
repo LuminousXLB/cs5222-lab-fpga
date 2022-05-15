@@ -1588,11 +1588,11 @@ create_root_design ""
 # tmoreau89 BEGIN
 ################################################################
 
+validate_bd_design 
+
 # Create top-level wrapper file
 make_wrapper -files [get_files $proj_path/$proj_name.srcs/sources_1/bd/$proj_name/$proj_name.bd] -top
-add_files -norecurse $proj_path/$proj_name.srcs/sources_1/bd/$proj_name/hdl/${proj_name}_wrapper.v
-update_compile_order -fileset sources_1
-update_compile_order -fileset sim_1
+add_files -norecurse $proj_path/$proj_name.gen/sources_1/bd/$proj_name/hdl/${proj_name}_wrapper.v
 
 # Run bistream generation on 4 threads
 launch_runs impl_1 -to_step write_bitstream -jobs 4

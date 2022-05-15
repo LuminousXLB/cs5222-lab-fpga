@@ -65,7 +65,7 @@ In addition, you will need an Ethernet port on your machine to communicate with 
 
 If you don’t have a 64-bit Linux OS installed on your machine, we recommend [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox) (free) or dual booting your machine.
 
-Make sure to allocate at least 96GB (or 128GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 4-8GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 20.04.4 LTS.
+Make sure to allocate at least 96GB (or 128GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 8GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 20.04.4 LTS.
 
 ### Vitis Unified Software Platform 2020.2
 
@@ -169,8 +169,7 @@ In order to interface with the input and output AXI streams, we've provided two 
 #define OS_SIZE BATCHES* CLASSES
 
 // AXI Stream interface
-void mmult_hw(hls::stream<AXI_VAL>& in_stream,
-    hls::stream<AXI_VAL>& out_stream)
+void mmult_hw(hls::stream<AXI_VAL>& in_stream, hls::stream<AXI_VAL>& out_stream)
 {
 
     // Hardware buffers
@@ -262,7 +261,7 @@ Now the code in `mmult_float.cpp` should look a lot more familiar!
 Execute the HLS compilation (takes about 15-30s for the base design):
 ```
 cd hls/mmult_float/
-vivado_hls -f hls.tcl
+vitis_hls -f hls.tcl
 ```
 The `hls.tcl` contains a sequence of commands to compile your design via HLS. You don't need to modify this file. It will run basic correctness checks in simulation, which are specified in the `mmult_test.cpp` test-bench. If the simulation fails, your hardware design won't be synthesized.
 
@@ -348,7 +347,7 @@ Carefully insert `#pragma HLS PIPELINE II=1` directives in your code to tell HLS
 Report (1) the design latency in cycles, (2) the overall device utilization (as Total per Resource), (3) the number of floating point adders and multipliers (you can find this information under the Instance section of the synthesis report) and (4) the Initiation Interval of the loops you pipelined.
 
 **Hints**:
-* Pragmas should be inserted after the target loop header that you wish to unroll. You can always use the Vivado GUI after compilation with the following command: `vivado_hls -p accel/` to correctly insert pragmas.
+* Pragmas should be inserted after the target loop header that you wish to unroll. You can always use the Vivado GUI after compilation with the following command: `vitis_hls -p accel/` to correctly insert pragmas.
 * Chapter 7 of the [Vivado HLS Tutorial](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_1/ug871-vivado-high-level-synthesis-tutorial.pdf) should provide enough guidance on how to do this effectively.
 * Start from the inner-most loop(s) before moving to an outer-loop. Starting at an outer loop will flatten it entirely and your resource usage and compilation time will explode.
 
@@ -356,7 +355,7 @@ Report (1) the design latency in cycles, (2) the overall device utilization (as 
 
 ## C. Increasing Pipeline Parallelism by Repartitioning Memories (8 marks)
 
-If you examine the log from HLS in `vivado_hls.log` you will find the following warning message:
+If you examine the log from HLS in `vitis_hls.log` you will find the following warning message:
 ```
 WARNING: [SCHED 204-69] Unable to schedule 'load' operation ('in_buf_load_2', ./mmult_accel.cpp:79) on array 'in_buf', ./mmult_accel.cpp:32 due to limited memory ports.
 ```

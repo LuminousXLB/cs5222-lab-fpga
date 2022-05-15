@@ -3,7 +3,7 @@ BUILD_DIR = build
 SCRIPT_DIR = tcl
 
 # Executables
-VIVADO_HLS = vivado_hls
+VIVADO_HLS = vitis_hls
 VIVADO = vivado
 
 .PHONY: all setup ip bit clean
