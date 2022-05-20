@@ -65,13 +65,13 @@ In addition, you will need an Ethernet port on your machine to communicate with 
 
 If you don’t have a 64-bit Linux OS installed on your machine, we recommend [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox) (free) or dual booting your machine.
 
-Make sure to allocate at least 96GB (or 128GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 8GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 20.04.4 LTS.
+Make sure to allocate at least 80GB (or 128GB preferably) of disk drive space for your VM’s main partition. In addition, compilation jobs can be resource-intensive, so allocating 4 CPU cores and 6-8 GB of DRAM for your VM would be wise. We’ve tested the tools under Ubuntu 20.04.4 LTS.
 
-### Vitis Unified Software Platform 2020.2
+### Vivado Design Suite 2020.2
 
-You’ll need to install Xilinx’ FPGA compilation toolchain, Vitis Unified Software Platform 2020.2. Xilinx provides a free edition and that's enough for this project.
+You’ll need to install Xilinx’ FPGA compilation toolchain, Vivado Design Suite 2020.2. Xilinx provides a free edition and that's enough for this project.
 
-1. Go to the [download webpage](https://www.xilinx.com/support/download.html), and download the **Xilinx Unified Installer 2020.2: Linux Self Extracting Web Installer** from Vivado Archive.
+1. Go to the [download webpage](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html), select version 2020.2 and download the **Xilinx Unified Installer 2020.2: Linux Self Extracting Web Installer**.
 2. You’ll have to sign in with a Xilinx account. This requires a Xilinx account creation that will take 2 minutes.
 3. Pass the Name and Address Verification by clicking “Next”, and you will get the opportunity to download a binary file, called `Xilinx_Unified_2020.2_1118_1232_Lin64.bin`.
 4. Now that the file is downloaded, go to your Downloads directory, and change the file permissions so it can be executed: `chmod u+x Xilinx_Unified_2020.2_1118_1232_Lin64.bin`
@@ -80,20 +80,27 @@ You’ll need to install Xilinx’ FPGA compilation toolchain, Vitis Unified Sof
    * On the _A Newer Version Is Available_ prompt, click “Continue” to continue installing version 2020.2.
    * Click “Next” on the _Welcome_ screen.
    * Enter your Xilinx User Credentials under “User Authentication” and select the “Download and Install Now” before clicking “Next” on the _Select Install Type_ screen.
-   * Select “Vitis” and click “Next” on the _Select Product to Install_.
-   * Under the _Vitis Unified Software Platform_ screen, before hitting “Next", check the following options (the rest can be unchecked):
-     * Design Tools -> Vitis Unified Software Platform
+   * Select “Vivado” and click “Next”.
+     ![](image/install-01-product.png)
+   * Select “Vivado HL WebPACK” and click “Next”.
+     ![](image/install-02-edition.png)
+   * Under the _Vivado Design Suite_ screen, before hitting “Next", check the following options (the rest can be unchecked):
+     * Design Tools -> Vivado Design Suite
      * Devices -> Devices for Custom Platforms -> SoCs -> Zynq-7000
-   * Your total download size should be about 17.36 GB and the amount of Disk Space Required 77.67 GB.
+     ![](image/install-03-component.png)
+   * Your total download size should be about 13.86 GB and the amount of Disk Space Required 77.67 GB.
    * Accept all terms before clicking on “Next” on the _Accept License Agreements_ screen.
    * Set the installation directory before clicking “Next” on the _Select Destination Directory_ screen. It might highlight some paths as red - that’s because the installer doesn’t have the permission to write to that directory. In that case select a path that doesn’t require special write permissions (e.g. in your home directory).
    * Hit “Install” under the _Installation Summary_ screen.
    * An _Installation Progress Window_ will pop-up to track progress of the download and the installation.
    * This process will take about 20-30 minutes depending on your connection speed.
    * A pop-up window will inform you that the installation completed successfully. Click “OK”.
-7. The last step is to update your `~/.bashrc` with the following line:
+7. The last step is to install other dependencies.
     ```bash
-    # Xilinx Vitis HLS 2020.2 environment
+    sudo apt install git libtinfo5 build-essential gcc-multilib
+    ```
+8. You'll need to set environment variables to launch Vitis HLS and Vivado, by executing the command below. You may also append it to your `~/.bashrc` so that the variables can be loaded automatically on logging on.
+    ```bash
     source <install_path>/Xilinx/Vitis_HLS/2020.2/settings64.sh
     ```
 
@@ -443,13 +450,12 @@ make -j1
 
 And voilà! This process will take a little while (30 mins) depending on utilization. Regarding utilization, to avoid *no-place* errors, we recommend compiling your design where no resource exceeds 60%. This will ensure that your place and route tools have breathing space. In addition, it will make compilation time go a little faster. **Consequently we recommend scaling the design down a little, by limiting the array partitioning factor to `4`, and keeping both tile size and batch size to `128` and `2048` respectively.**
 
-**Note** If you failed to generate IP due to some invalid argument error, follow this [article](https://support.xilinx.com/s/article/76960?language=en_US) and apply the patch given.
-
+**Note** If you failed to generate IP due to some _bad lexical cast_ or _invalid argument_ error, follow this [article](https://support.xilinx.com/s/article/76960?language=en_US) and apply the patch given.
 
 When your design is done compiling, it is ready to be tested on the PYNQ! Let's go ahead and transfer (1) the hardware design overlay files, (2) the test program, (3) the trained linear model, and (4) the MNIST validation data and labels to the PYNQ board.
 ```bash
-scp `find -name "*.bit"` xilinx@192.168.2.99:~/classifier.bit
-scp `find -name "*.hwh"` xilinx@192.168.2.99:~/classifier.hwh
+scp `find -name "system_wrapper.bit"` xilinx@192.168.2.99:~/classifier.bit
+scp `find -name "system.hwh"` xilinx@192.168.2.99:~/classifier.hwh
 scp jupyter/classifier_1.ipynb xilinx@192.168.2.99:/home/xilinx/jupyter_notebooks/.
 scp python/*.npy xilinx@192.168.2.99:/home/xilinx/jupyter_notebooks/.
 ```
